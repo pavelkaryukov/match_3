@@ -29,6 +29,18 @@ if(NOT SFML_FOUND)
 	return()
 endif()
 
+find_package(Boost REQUIRED)
+if(NOT Boost_FOUND)
+	message(SEND_ERROR "Failed to find boost")
+	return()
+endif()
+
+target_include_directories(			
+	match_3
+	PRIVATE 
+    ${PROJECT_SOURCE_DIR} 
+    ${Boost_INCLUDE_DIRS}
+)
 target_link_libraries(match_3  sfml-graphics sfml-audio)
 
 # TODO: Add tests and install targets if needed.

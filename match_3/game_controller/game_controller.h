@@ -1,5 +1,5 @@
 #pragma once
-#include "../game_render/game_render.h"
+#include "game_render/game_render.h"
 #include <SFML/Graphics.hpp>
 
 class GameController {

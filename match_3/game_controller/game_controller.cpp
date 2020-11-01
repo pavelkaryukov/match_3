@@ -11,7 +11,7 @@ void GameController::Run() {
             if (event.type == sf::Event::Closed) m_Render.lock()->window().close();
             if (event.type == sf::Event::KeyPressed) {
                 ++counter;
-                m_Render.lock()->ChangeText(std::string("Clicked:") + std::to_string(counter));
+                m_Render.lock()->SetScores(counter);
             }
         }
 
