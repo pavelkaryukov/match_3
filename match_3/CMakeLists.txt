@@ -4,7 +4,8 @@
 cmake_minimum_required (VERSION 3.8)
 set(resources_dir "images")
 set(resources ${resources_dir}/cursor.png ${resources_dir}/gems.png ${resources_dir}/background.png ${resources_dir}/calibri.ttf)
-set(resources_bin_dir ${CMAKE_CURRENT_BINARY_DIR}/images)
+#set(resources_bin_dir ${CMAKE_CURRENT_BINARY_DIR}/images)
+set(resources_bin_dir ${CMAKE_BINARY_DIR}/images)
 
 file(MAKE_DIRECTORY ${resources_bin_dir})
 file(COPY ${resources} DESTINATION ${resources_bin_dir})
@@ -20,7 +21,8 @@ set_target_properties (
 	CXX_STANDARD 17
 	CXX_STANDARD_REQUIRED ON	
 )
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/"modules" ${CMAKE_MODULE_PATH})
+#set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/"modules" ${CMAKE_MODULE_PATH})
+set(ENV{SFML_DIR} "c:\\Program Files (x86)\\SFML-2.5.1" )
 set(SFML_STATIC_LIBRARIES TRUE)
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
