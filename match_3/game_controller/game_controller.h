@@ -1,9 +1,9 @@
-#pragma once
+ο»Ώ#pragma once
 #include "game_render/game_render.h"
 #include "game_model/game_model.h"
 #include <SFML/Graphics.hpp>
 
-//TODO:: οεπεδελΰςό νΰ shared_ptr
+//TODO:: ΠΏΠµΡ€ΠµΠ΄ΠµΠ»Π°Ρ‚Ρ Π½Π° shared_ptr
 class GameController {
     std::weak_ptr<GameRender> m_Render;
     std::weak_ptr<GameModel>  m_Model;

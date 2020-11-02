@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "assets/assets.h"
 #include <array>           
 #include <iostream>
@@ -14,14 +14,14 @@ enum class GemsType {
     Type7
 };
 
-//TODO::В отдельный хедр
+//TODO::Р’ РѕС‚РґРµР»СЊРЅС‹Р№ С…РµРґСЂ
 struct GemStone {
-    //int X        ;//Координаты общие
-    //int Y        ;//Координаты общие
-    //int Alpha    ;//видимость
-    GemsType Type;//тип камня
-    int Row   ;//индекс в поле строка
-    int Column;//индекс в поле столбец
+    //int X        ;//РљРѕРѕСЂРґРёРЅР°С‚С‹ РѕР±С‰РёРµ
+    //int Y        ;//РљРѕРѕСЂРґРёРЅР°С‚С‹ РѕР±С‰РёРµ
+    //int Alpha    ;//РІРёРґРёРјРѕСЃС‚СЊ
+    GemsType Type;//С‚РёРї РєР°РјРЅСЏ
+    int Row   ;//РёРЅРґРµРєСЃ РІ РїРѕР»Рµ СЃС‚СЂРѕРєР°
+    int Column;//РёРЅРґРµРєСЃ РІ РїРѕР»Рµ СЃС‚РѕР»Р±РµС†
     //methods
 
     GemStone() {};

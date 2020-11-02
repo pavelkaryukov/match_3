@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "game_model/game_model.h" 
 #include <SFML/Graphics.hpp>
 
@@ -15,7 +15,7 @@ public:
     bool Init();
     void Render();
     void draw(sf::RenderTarget& aTarget, sf::RenderStates aStates) const override;
-    void SetScores(std::size_t aScore);//Вынести в приват, очки будет присылать GameModel
+    void SetScores(std::size_t aScore);//В¬С‹РЅРµСЃС‚Рё РІ РїСЂРёРІР°С‚, РѕС‡РєРё Р±СѓРґРµС‚ РїСЂРёСЃС‹Р»Р°С‚СЊ GameModel
 private:
     void DrawAllGemStones() const;
     void CheckValidityPtr() const;
