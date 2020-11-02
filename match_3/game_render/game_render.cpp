@@ -10,16 +10,8 @@ GameRender::~GameRender() {
     std::cout << "GameRender: Destructor" << std::endl;
 }
 
-namespace windows_size {
-    static const int RENDER_X = 740;
-    static const int RENDER_Y = 480;
-    static const int FIELD_X = 430;
-    static const int FIELD_Y = 430;
-}
-
 bool GameRender::Init() {
-    // Создаем окно размером 600 на 600 и частотой обновления 60 кадров в секунду
-    m_Window.create(sf::VideoMode(windows_size::RENDER_X, windows_size::RENDER_Y), "Match-3 Line Game");
+    m_Window.create(sf::VideoMode(RENDER_X, RENDER_Y), "Match-3 Line Game");
     m_Window.setFramerateLimit(60);
     // Текст с обозначением клавиш
     m_Text = sf::Text("F2 - New Game / Esc - Exit / Left Mouse Button - Move Gem", Assets::Instance().GetFont(), 20);
@@ -48,25 +40,27 @@ void GameRender::draw(sf::RenderTarget& aTarget, sf::RenderStates aStates) const
     background.setPosition(0.f, 0.f);
     aTarget.draw(background, aStates);
     // Рисуем рамку игрового поля
-    sf::RectangleShape shape(sf::Vector2f(windows_size::FIELD_X, windows_size::FIELD_Y));
+    sf::RectangleShape shape(sf::Vector2f(FIELD_X, FIELD_Y));
     shape.setOutlineThickness(2.f);
     shape.setOutlineColor(color);
     shape.setFillColor(sf::Color::Transparent);
     shape.setPosition(45, 25);//Сместили позицию для второго текста
     aTarget.draw(shape, aStates);
-    DrawAllGemStones();
+    //Отрисовка камней
+    DrawAllGemStones(aTarget,aStates);
 }
 
 void GameRender::SetScores(std::size_t aScore) {
     m_ScoresText.setString(boost::str(boost::format("Scores:%1%")%aScore));
 }
 
-void GameRender::DrawAllGemStones() const {
+void GameRender::DrawAllGemStones(sf::RenderTarget& aTarget, sf::RenderStates& aStates) const
+{
     CheckValidityPtr();
     auto model = m_Model.lock();
     for (auto& row : model->GetStones()) {
         for (auto& stone : row) {
-            DrawGemStone(stone);
+            DrawGemStone(stone, aTarget, aStates);
         }
     }
 }
@@ -76,6 +70,14 @@ void GameRender::CheckValidityPtr() const {
         throw std::runtime_error("GameRender: m_GameModel are expired");
 }
 
-void GameRender::DrawGemStone(const GemStone& aStone) const {
+void GameRender::DrawGemStone(const GemStone& aStone, sf::RenderTarget& aTarget, sf::RenderStates& aStates) const {
+    sf::Sprite sprite{ Assets::Instance().GetGems() };//TODO::Вынести за цикл?
+    sprite.setTextureRect(GetStoneTileField(aStone.Type));
+    sprite.setColor(sf::Color(255, 255, 255, 255));
+    sprite.setPosition(STONE_OFFSET.x + TILE_SIZE * aStone.Row , STONE_OFFSET.y + TILE_SIZE * aStone.Column );
+    aTarget.draw(sprite, aStates);                                
+}
 
+sf::IntRect GameRender::GetStoneTileField(const GemsType& aType) const {
+    return sf::IntRect((static_cast<int>(aType)) * SPRITE_CUT_OFFSET, 0, SPRITE_CUT_OFFSET, SPRITE_CUT_OFFSET);
 }

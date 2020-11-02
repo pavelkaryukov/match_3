@@ -13,7 +13,7 @@ file(COPY ${resources} DESTINATION ${resources_bin_dir})
 set(assets_src "assets/assets.h" )   
 set(game_render_src "game_render/game_render.h" "game_render/game_render.cpp")   
 set(game_controller_src "game_controller/game_controller.h" "game_controller/game_controller.cpp")
-set(game_model_src "game_model/game_model.h" "game_model/game_model.cpp")
+set(game_model_src "game_model/game_model.h" "game_model/game_model.cpp" "game_model/gem_stone.h")
 
 add_executable (match_3 "main.cpp" ${game_render_src} ${game_controller_src} ${assets} ${game_model_src})
 set_target_properties (

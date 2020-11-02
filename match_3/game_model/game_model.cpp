@@ -13,8 +13,8 @@ const GameModel::gem_stones_t& GameModel::GetStones() const {
 }
 
 void GameModel::Init() {
-    for (int i = 0; i < gElemenetsNum; ++i) {
-        for (int j = 0; j < gElemenetsNum; ++j) {
+    for (int i = 0; i < ELEMENTS_NUM; ++i) {
+        for (int j = 0; j < ELEMENTS_NUM; ++j) {
             m_GemStones[i][j] = GemStone(i, j, RandomType());
         }
     }
