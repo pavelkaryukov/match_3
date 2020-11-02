@@ -2,8 +2,12 @@
 #include "assets/assets.h"
 #include <boost/format.hpp>
 
-GameRender::GameRender() {
+GameRender::GameRender(std::weak_ptr<GameModel>&& aModel) : m_Model(std::move(aModel)) {
     Init();
+}
+
+GameRender::~GameRender() {
+    std::cout << "GameRender: Destructor" << std::endl;
 }
 
 namespace windows_size {
@@ -50,8 +54,28 @@ void GameRender::draw(sf::RenderTarget& aTarget, sf::RenderStates aStates) const
     shape.setFillColor(sf::Color::Transparent);
     shape.setPosition(45, 25);//Сместили позицию для второго текста
     aTarget.draw(shape, aStates);
+    DrawAllGemStones();
 }
 
 void GameRender::SetScores(std::size_t aScore) {
     m_ScoresText.setString(boost::str(boost::format("Scores:%1%")%aScore));
+}
+
+void GameRender::DrawAllGemStones() const {
+    CheckValidityPtr();
+    auto model = m_Model.lock();
+    for (auto& row : model->GetStones()) {
+        for (auto& stone : row) {
+            DrawGemStone(stone);
+        }
+    }
+}
+
+void GameRender::CheckValidityPtr() const {
+    if (m_Model.expired())
+        throw std::runtime_error("GameRender: m_GameModel are expired");
+}
+
+void GameRender::DrawGemStone(const GemStone& aStone) const {
+
 }

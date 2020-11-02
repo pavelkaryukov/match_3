@@ -4,17 +4,18 @@
 cmake_minimum_required (VERSION 3.8)
 set(resources_dir "images")
 set(resources ${resources_dir}/cursor.png ${resources_dir}/gems.png ${resources_dir}/background.png ${resources_dir}/calibri.ttf)
-#set(resources_bin_dir ${CMAKE_CURRENT_BINARY_DIR}/images)
 set(resources_bin_dir ${CMAKE_BINARY_DIR}/images)
 
 file(MAKE_DIRECTORY ${resources_bin_dir})
 file(COPY ${resources} DESTINATION ${resources_bin_dir})
 
 
+set(assets_src "assets/assets.h" )   
 set(game_render_src "game_render/game_render.h" "game_render/game_render.cpp")   
 set(game_controller_src "game_controller/game_controller.h" "game_controller/game_controller.cpp")
+set(game_model_src "game_model/game_model.h" "game_model/game_model.cpp")
 
-add_executable (match_3 "match_3.cpp" ${game_render_src} ${game_controller_src})
+add_executable (match_3 "main.cpp" ${game_render_src} ${game_controller_src} ${assets} ${game_model_src})
 set_target_properties (
 	match_3 
 	PROPERTIES 
@@ -22,7 +23,7 @@ set_target_properties (
 	CXX_STANDARD_REQUIRED ON	
 )
 #set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/"modules" ${CMAKE_MODULE_PATH})
-set(ENV{SFML_DIR} "c:\\Program Files (x86)\\SFML-2.5.1" )
+#set(ENV{SFML_DIR} "c:\\Program Files (x86)\\SFML-2.5.1" )#Временно прибит гвоздями
 set(SFML_STATIC_LIBRARIES TRUE)
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
