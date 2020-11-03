@@ -1,9 +1,9 @@
 ﻿#pragma once
+#include "igame_render.h"
 #include "game_model/game_model.h" 
-#include <SFML/Graphics.hpp>
 
-
-class GameRender : public sf::Drawable, public sf::Transformable {
+//TODO:: Сделать интерфейс с комоторым будет работать контроллер
+class GameRender : public IGameRender {// public sf::Drawable, public sf::Transformable{
     static const int   RENDER_X = 740;
     static const int   RENDER_Y = 480;
     static const int   FIELD_X = 430;
@@ -19,11 +19,11 @@ class GameRender : public sf::Drawable, public sf::Transformable {
 public:
     GameRender(std::weak_ptr<GameModel>&& aModel);
     ~GameRender();
-    sf::RenderWindow& window() { return m_Window; };
-    bool Init();
-    void Render();
+    sf::RenderWindow& window() override { return m_Window; };
+    bool Init() override;
+    void Render() override;
     void draw(sf::RenderTarget& aTarget, sf::RenderStates aStates) const override;
-    void SetScores(std::size_t aScore);//Вынести в приват, очки будет присылать GameModel
+    void SetScores(std::size_t aScore) override;
 private:
     void DrawAllGemStones(sf::RenderTarget& aTarget, sf::RenderStates& aStates) const;
     void CheckValidityPtr() const;

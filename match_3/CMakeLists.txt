@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 set(assets_src "assets/assets.h" )   
-set(game_render_src "game_render/game_render.h" "game_render/game_render.cpp")   
+set(game_render_src "game_render/igame_render.h" "game_render/game_render.h" "game_render/game_render.cpp")   
 set(game_controller_src "game_controller/game_controller.h" "game_controller/game_controller.cpp")
 set(game_model_src "game_model/game_model.h" "game_model/game_model.cpp" "game_model/gem_stone.h")
 

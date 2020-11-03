@@ -8,7 +8,7 @@
 class GameModel {
     static const int ELEMENTS_NUM = 8;
     using gem_stones_t = std::array<std::array<GemStone, ELEMENTS_NUM>, ELEMENTS_NUM>;
-    gem_stones_t m_GemStones;// [gElemenetsNum][gElemenetsNum];
+    gem_stones_t m_GemStones;
 public:
     GameModel();
     ~GameModel();
