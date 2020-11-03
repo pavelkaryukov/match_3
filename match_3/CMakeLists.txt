@@ -2,13 +2,6 @@
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)
-set(resources_dir "images")
-set(resources ${resources_dir}/cursor.png ${resources_dir}/gems.png ${resources_dir}/background.png ${resources_dir}/calibri.ttf)
-set(resources_bin_dir ${CMAKE_BINARY_DIR}/images)
-
-file(MAKE_DIRECTORY ${resources_bin_dir})
-file(COPY ${resources} DESTINATION ${resources_bin_dir})
-
 
 set(assets_src "assets/assets.h" )   
 set(game_render_src "game_render/game_render.h" "game_render/game_render.cpp")   
@@ -46,4 +39,10 @@ target_include_directories(
 )
 target_link_libraries(match_3  sfml-graphics sfml-audio)
 
+set(resources_dir "resources")
+set(resources ${resources_dir}/cursor.png ${resources_dir}/gems.png ${resources_dir}/background.png ${resources_dir}/calibri.ttf)
+set(resources_bin_dir ${CMAKE_BINARY_DIR}/resources)
+
+file(MAKE_DIRECTORY ${resources_bin_dir})
+file(COPY ${resources} DESTINATION ${resources_bin_dir})
 # TODO: Add tests and install targets if needed.

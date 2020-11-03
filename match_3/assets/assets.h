@@ -14,19 +14,19 @@ public:
     
     sf::Font& GetFont() {
         if (!m_Font)
-            LoadResource(m_Font, "images//calibri.ttf");
+            LoadResource(m_Font, "resources//calibri.ttf");
         return *m_Font; 
     }
     
     sf::Texture& GetBackGround() {
         if (!m_Background)
-            LoadResource(m_Background, "images//background.png");
+            LoadResource(m_Background, "resources//background.png");
         return *m_Background;
     }
     
     sf::Texture& GetGems() {
         if (!m_Gems)
-            LoadResource(m_Gems, "images//gems.png");
+            LoadResource(m_Gems, "resources//gems.png");
         return *m_Gems;
     }
 

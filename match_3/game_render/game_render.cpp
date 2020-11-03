@@ -74,7 +74,7 @@ void GameRender::DrawGemStone(const GemStone& aStone, sf::RenderTarget& aTarget,
     sf::Sprite sprite{ Assets::Instance().GetGems() };//TODO::Вынести за цикл?
     sprite.setTextureRect(GetStoneTileField(aStone.Type));
     sprite.setColor(sf::Color(255, 255, 255, 255));
-    sprite.setPosition(STONE_OFFSET.x + TILE_SIZE * aStone.Row , STONE_OFFSET.y + TILE_SIZE * aStone.Column );
+    sprite.setPosition(STONE_OFFSET.x + TILE_SIZE * aStone.Row, STONE_OFFSET.y + TILE_SIZE * aStone.Column);
     aTarget.draw(sprite, aStates);                                
 }
 

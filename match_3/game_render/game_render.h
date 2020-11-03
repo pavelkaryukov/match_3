@@ -12,7 +12,6 @@ class GameRender : public sf::Drawable, public sf::Transformable {
     static const int   SPRITE_CUT_OFFSET = 49;
     const sf::Vector2i STONE_OFFSET{ 48, 24 };
 
-
     std::weak_ptr<GameModel> m_Model;
     sf::RenderWindow m_Window;
     sf::Text m_Text;

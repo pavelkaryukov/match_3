@@ -3,7 +3,7 @@
 #include <iostream>
 
 void Run() {
-    std::shared_ptr<GameModel>  model = std::make_shared<GameModel>();	// Создаем представление
+    std::shared_ptr<GameModel>  model = std::make_shared<GameModel>();	// Создаем игровую модель
     std::shared_ptr<GameRender> render = std::make_shared<GameRender>(model);	// Создаем представление
     GameController controller(render, model);	// Создаем контроллер
     try {
