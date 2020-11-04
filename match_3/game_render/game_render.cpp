@@ -1,8 +1,9 @@
 ﻿#include "game_render.h"
-#include "assets/assets.h"
+#include "assets/assets.h" 
+#include <iostream>
 #include <boost/format.hpp>
 
-GameRender::GameRender(std::weak_ptr<GameModel>&& aModel) : m_Model(std::move(aModel)) {
+GameRender::GameRender() {
     Init();
 }
 
@@ -17,7 +18,7 @@ bool GameRender::Init() {
     m_Text = sf::Text("F2 - New Game / Esc - Exit / Left Mouse Button - Move Gem", Assets::Instance().GetFont(), 20);
     m_Text.setFillColor(sf::Color::Red);
     m_Text.setPosition(40.f, 0.f);
-    
+
     m_ScoresText = sf::Text("", Assets::Instance().GetFont(), 50);
     SetScores(0);
     m_ScoresText.setFillColor(sf::Color::Red);
@@ -30,6 +31,7 @@ void GameRender::Render() {
     m_Window.draw(*this);
     m_Window.draw(m_Text);
     m_Window.draw(m_ScoresText);
+    _MoveSprites();
     m_Window.display();
 }
 
@@ -46,36 +48,52 @@ void GameRender::draw(sf::RenderTarget& aTarget, sf::RenderStates aStates) const
     shape.setFillColor(sf::Color::Transparent);
     shape.setPosition(45, 25);//Сместили позицию для второго текста
     aTarget.draw(shape, aStates);
-    //Отрисовка камней
-    DrawAllGemStones(aTarget,aStates);
+    
 }
 
 void GameRender::SetScores(std::size_t aScore) {
     m_ScoresText.setString(boost::str(boost::format("Scores:%1%")%aScore));
 }
 
-void GameRender::DrawAllGemStones(sf::RenderTarget& aTarget, sf::RenderStates& aStates) const
+void GameRender::DrawAllGemStones(const stones::gem_stones_t& aStones) 
 {
-    CheckValidityPtr();
-    auto model = m_Model.lock();
-    for (auto& row : model->GetStones()) {
-        for (auto& stone : row) {
-            DrawGemStone(stone, aTarget, aStates);
-        }
+    m_SpriteStones.clear();
+    for (int i = 0; i < aStones.size(); ++i)
+        for (int j = 0; j < aStones[i].size(); ++j) 
+            DrawGemStone(aStones[i][j], i, j);
+
+    //for (const auto& row : aStones) {
+    //    for (auto& stone : row) {
+    //        DrawGemStone(stone);
+    //    }
+    //}
+    m_Window.display();
+}
+
+void GameRender::MoveSprites() {
+    for (auto&[sprite, action] : m_SpriteStones) {
+        //action.Move = TILE_SIZE;
     }
 }
 
-void GameRender::CheckValidityPtr() const {
-    if (m_Model.expired())
-        throw std::runtime_error("GameRender: m_GameModel are expired");
+void GameRender::_MoveSprites() {
+    for (auto&[sprite, action] : m_SpriteStones) {
+        if (action.MoveX || action.MoveY) {
+            sprite.move({ 0, 2 });
+            //action.Move -= TILE_SIZE / 27;
+        }
+    }
+    for (const auto& sprite : m_SpriteStones) {
+        m_Window.draw(sprite.first);
+    }
 }
 
-void GameRender::DrawGemStone(const GemStone& aStone, sf::RenderTarget& aTarget, sf::RenderStates& aStates) const {
+void GameRender::DrawGemStone(const GemStone& aStone, const int aX, const int aY)  {
     sf::Sprite sprite{ Assets::Instance().GetGems() };//TODO::Вынести за цикл?
     sprite.setTextureRect(GetStoneTileField(aStone.Type));
     sprite.setColor(sf::Color(255, 255, 255, 255));
-    sprite.setPosition(STONE_OFFSET.x + TILE_SIZE * aStone.Row, STONE_OFFSET.y + TILE_SIZE * aStone.Column);
-    aTarget.draw(sprite, aStates);                                
+    sprite.setPosition(STONE_OFFSET.x + TILE_SIZE * aX, STONE_OFFSET.y + TILE_SIZE * aY);
+    m_SpriteStones.push_back({ sprite, {} });
 }
 
 sf::IntRect GameRender::GetStoneTileField(const GemsType& aType) const {
