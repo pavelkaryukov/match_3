@@ -17,7 +17,8 @@ class GameModel {
     std::size_t m_Scores = 0;
     std::tuple<bool, Position>     m_Clicked{ false, {0, 0 }};
     std::tuple<Position, Position> m_LastMove{ {0, 0}, {0, 0} };
-    std::set<Position> m_RemovableElements;
+    mutable std::set<Position> m_RemovableElements;
+
 public:
     GameModel();
     ~GameModel();
@@ -27,8 +28,8 @@ public:
     bool IsValidMove() const;
     std::size_t GetScores() const;
     void NewGame();
-private:
 
+private:
     void Init();
     GemsType RandomType() const;
     void SwapStone(GemStone& aStone1, GemStone& aStone2);
@@ -38,4 +39,5 @@ private:
     bool IsMatchColumn(const int aX, const int aY) const;
     bool IsMatch3InRow(const int aX, const int aY) const;
     bool IsMatch3InColumn(const int aX, const int aY) const;
+    bool CheckMatch3Line(const Position&& aGem1, const Position&& aGem2, const Position&& aGem3) const;
 };

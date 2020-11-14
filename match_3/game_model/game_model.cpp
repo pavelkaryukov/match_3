@@ -58,7 +58,7 @@ bool GameModel::IsMatch(const int aX, const int aY) const {
 
 bool GameModel::IsMatchRow(const int aX, const int aY) const {
     const int leftBorder = aX == 0 || aX == 1 ? 0 : aX - 2;
-    const int rightBorder = (aX + 1 == m_GemStones.size()) || (aX + 2 == m_GemStones.size()) ? 0 : aX + 2;
+    const int rightBorder = (aX + 1 == m_GemStones.size()) || (aX + 2 == m_GemStones.size()) ? m_GemStones.size() - 1 : aX + 2;
     bool res = false;
     for (int i = leftBorder; i < rightBorder; ++i) {
         res = res || IsMatch3InRow(i, aY);
@@ -68,7 +68,7 @@ bool GameModel::IsMatchRow(const int aX, const int aY) const {
 
 bool GameModel::IsMatchColumn(const int aX, const int aY) const {
     const int bottomBorder = aY == 0 || aY == 1 ? 0 : aY - 2;
-    const int topBorder = (aY + 1 == m_GemStones.size()) || (aY + 2 == m_GemStones.size()) ? 0 : aY + 2;
+    const int topBorder = (aY + 1 == m_GemStones.size()) || (aY + 2 == m_GemStones.size()) ? m_GemStones.size() - 1 : aY + 2;
     bool res = false;
     for (int i = bottomBorder; i < topBorder; ++i) {
         res = res || IsMatch3InColumn(i, aY);
@@ -77,28 +77,37 @@ bool GameModel::IsMatchColumn(const int aX, const int aY) const {
 }
 
 bool GameModel::IsMatch3InRow(const int aX, const int aY) const {
-    if (aX != 0 && aX + 1 != m_GemStones.size()) { // Общий случай
-        return m_GemStones[aX - 1][aY].Type == m_GemStones[aX][aY].Type && m_GemStones[aX][aY].Type == m_GemStones[aX + 1][aY].Type;
+    if (aX != 0 && aX + 1 != m_GemStones.size()) {
+        return CheckMatch3Line({ aX - 1, aY }, { aX, aY }, { aX + 1, aY });
     }
-    else if (aX == 0) { //Слева                                                                                                     
-        return m_GemStones[aX][aY].Type == m_GemStones[aX + 1][aY].Type && m_GemStones[aX][aY].Type == m_GemStones[aX + 2][aY].Type;
+    else if (aX == 0) {                                             
+        return CheckMatch3Line({ aX, aY }, { aX + 1, aY }, { aX + 2, aY });
     }
-    else if (aX + 1 == m_GemStones.size()) { //справо
-        return m_GemStones[aX][aY].Type == m_GemStones[aX - 1][aY].Type && m_GemStones[aX][aY].Type == m_GemStones[aX - 2][aY].Type;
+    else if (aX + 1 == m_GemStones.size()) {
+        return CheckMatch3Line({ aX - 2, aY }, { aX - 1, aY }, { aX, aY });
     }
-    
 }
 
 bool GameModel::IsMatch3InColumn(const int aX, const int aY) const {
-    if (aY != 0 && aY + 1 != m_GemStones[0].size()) { // Общий случай
-        return m_GemStones[aX][aY - 1].Type == m_GemStones[aX][aY].Type && m_GemStones[aX][aY].Type == m_GemStones[aX][aY + 1].Type;
+    if (aY != 0 && aY + 1 != m_GemStones[0].size()) { 
+        return CheckMatch3Line({ aX, aY - 1 }, { aX, aY }, {aX, aY + 1});
     }
-    else if (aY == 0) { //Слева                                                                                                     
-        return m_GemStones[aX][aY].Type == m_GemStones[aX][aY + 1].Type && m_GemStones[aX][aY].Type == m_GemStones[aX][aY + 2].Type;
+    else if (aY == 0) {                                           
+        return CheckMatch3Line({ aX, aY }, { aX, aY + 1 }, { aX, aY + 2 });
     }
-    else if (aY + 1 == m_GemStones[0].size()) { //справо
-        return m_GemStones[aX][aY].Type == m_GemStones[aX][aY - 1].Type && m_GemStones[aX][aY].Type == m_GemStones[aX][aY - 2].Type;
+    else if (aY + 1 == m_GemStones[0].size()) { 
+        return CheckMatch3Line({ aX, aY - 2}, { aX, aY - 1 }, { aX, aY});
     }
+}
+
+bool GameModel::CheckMatch3Line(const Position&& aGem1, const Position&& aGem2, const Position&& aGem3) const {
+    bool res = m_GemStones[aGem1.x][aGem1.y].Type == m_GemStones[aGem2.x][aGem2.y].Type && m_GemStones[aGem2.x][aGem2.y].Type == m_GemStones[aGem3.x][aGem3.y].Type;
+    if (res) {
+        m_RemovableElements.insert(aGem1);
+        m_RemovableElements.insert(aGem2);
+        m_RemovableElements.insert(aGem3);
+    }
+    return res;
 }
 
 void GameModel::Cancel() {
@@ -108,6 +117,7 @@ void GameModel::Cancel() {
 }
 
 bool GameModel::IsValidMove() const {
+    m_RemovableElements.clear();
     auto&[pos1, pos2] = m_LastMove;
     return IsMatch(pos1.x, pos1.y) || IsMatch(pos2.x, pos2.y);
 }

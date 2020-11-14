@@ -45,10 +45,8 @@ void GameController::Run() {
                         moved = true;
                         frameCounter = 1;
                         //Затребовать отрисовку смены позиций
-                        int stop1 = 0;
                     }
                 }
-                int stop1 = 0;
             }
 
         }

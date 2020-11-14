@@ -47,8 +47,7 @@ void GameRender::draw(sf::RenderTarget& aTarget, sf::RenderStates aStates) const
     shape.setOutlineColor(color);
     shape.setFillColor(sf::Color::Transparent);
     shape.setPosition(45, 25);//Сместили позицию для второго текста
-    aTarget.draw(shape, aStates);
-    
+    aTarget.draw(shape, aStates);  
 }
 
 void GameRender::SetScores(std::size_t aScore) {
@@ -61,12 +60,6 @@ void GameRender::DrawAllGemStones(const stones::gem_stones_t& aStones)
     for (int i = 0; i < aStones.size(); ++i)
         for (int j = 0; j < aStones[i].size(); ++j) 
             DrawGemStone(aStones[i][j], i, j);
-
-    //for (const auto& row : aStones) {
-    //    for (auto& stone : row) {
-    //        DrawGemStone(stone);
-    //    }
-    //}
     m_Window.display();
 }
 
