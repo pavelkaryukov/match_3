@@ -76,6 +76,14 @@ void GameRender::MoveSprites() {
     }
 }
 
+const int GameRender::GetTileSize() const {
+    return TILE_SIZE;
+}
+
+const std::pair<int, int> GameRender::GetOffset() const {
+    return { STONE_OFFSET.x, STONE_OFFSET.y };
+}
+
 void GameRender::_MoveSprites() {
     for (auto&[sprite, action] : m_SpriteStones) {
         if (action.MoveX || action.MoveY) {

@@ -33,8 +33,8 @@ public:
     void SetScores(std::size_t aScore);
     void DrawAllGemStones(const stones::gem_stones_t& aStones);
     void MoveSprites();
-    const int GetTileSize() const { return TILE_SIZE; };
-    const std::pair<int, int> GetOffset() const { return { STONE_OFFSET.x, STONE_OFFSET.y }; };
+    const int GetTileSize() const;
+    const std::pair<int, int> GetOffset() const;
 private:
     void _MoveSprites(); //rename
     void DrawGemStone(const GemStone& aStone, const int aX, const int aY) ;

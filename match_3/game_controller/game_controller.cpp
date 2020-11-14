@@ -7,9 +7,20 @@ GameController::~GameController() {
 void GameController::Run() {
     CheckValidityPtrs();
     sf::Event event;
-    std::size_t counter = 0;
-    bool firstStart = true;
+    std::size_t frameCounter = 0;
+    bool firstStart = true, moved = false;
     while (m_Render.lock()->window().isOpen()) {
+        if (moved && ((++frameCounter) % 16 == 0)) {
+            if (m_Model.lock()->IsValidMove()) {
+                //Positive move - destroy line
+            }
+            else {
+                m_Model.lock()->Cancel();
+            }
+            m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+            moved = false;
+        }
+
         if (firstStart) {
             m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
             firstStart = false;
@@ -20,17 +31,19 @@ void GameController::Run() {
 
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::F2) {
-                   //m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+                    m_Model.lock()->NewGame();
+                    m_Render.lock()->SetScores(m_Model.lock()->GetScores());
+                    m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
                 }
-                ++counter;
-                m_Render.lock()->SetScores(counter);
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.key.code == sf::Mouse::Left) {
-                    auto[isStone, x, y] = GetClickedElement(m_Render.lock()->GetTileSize(), m_Render.lock()->GetOffset(), event.mouseButton);
+                    auto [isStone, x, y] = GetClickedElement(m_Render.lock()->GetTileSize(), m_Render.lock()->GetOffset(), event.mouseButton);
                     if (isStone && m_Model.lock()->SetClickedIndex(x, y)) {
                         m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+                        moved = true;
+                        frameCounter = 1;
                         //Затребовать отрисовку смены позиций
                         int stop1 = 0;
                     }
