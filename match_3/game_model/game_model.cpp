@@ -53,6 +53,15 @@ void GameModel::SwapStone(GemStone& aStone1, GemStone& aStone2) {
 
 
 bool GameModel::IsMatch(const int aX, const int aY) const {
+    for (int i = 0; i < m_GemStones.size(); ++i)
+        IsMatchRow(i, aY);
+
+    for (int j = 0; j < m_GemStones.size(); ++j)
+        IsMatch3InColumn(aX, j);
+    return !m_RemovableElements.empty();
+}
+
+bool GameModel::IsMatch_old(const int aX, const int aY) const {
     return IsMatchRow(aX, aY) || IsMatch3InColumn(aX, aY);
 }
 
@@ -110,6 +119,14 @@ bool GameModel::CheckMatch3Line(const Position&& aGem1, const Position&& aGem2, 
     return res;
 }
 
+void GameModel::DeleteElement(Position aPos) {
+    const int lastY = 0;
+    for (int posY = aPos.y; posY > lastY; --posY) {
+        m_GemStones[aPos.x][posY] = std::move(m_GemStones[aPos.x][posY - 1]);
+    }
+    m_GemStones[aPos.x][0] = GemStone(aPos.x, lastY, RandomType());
+}
+
 void GameModel::Cancel() {
     auto&[pos1, pos2] = m_LastMove;
     SwapStone(m_GemStones[pos1.x][pos1.y], m_GemStones[pos2.x][pos2.y]);
@@ -119,7 +136,9 @@ void GameModel::Cancel() {
 bool GameModel::IsValidMove() const {
     m_RemovableElements.clear();
     auto&[pos1, pos2] = m_LastMove;
-    return IsMatch(pos1.x, pos1.y) || IsMatch(pos2.x, pos2.y);
+    bool res1 = IsMatch(pos1.x, pos1.y);
+    bool res2 = IsMatch(pos2.x, pos2.y);
+    return res1 || res2;
 }
 
 std::size_t GameModel::GetScores() const {
@@ -131,4 +150,19 @@ void GameModel::NewGame() {
     m_Clicked = { false, {0, 0} };
     m_LastMove = { {0, 0}, {0, 0} };
     Init();
+}
+
+void GameModel::DeleteElements() {
+    m_Scores += m_RemovableElements.size();
+    for (auto& elem : m_RemovableElements) {
+        DeleteElement(elem);
+    }
+    m_RemovableElements.clear();
+}
+
+bool GameModel::CheckRemovable() {
+    for (int i =0; i < m_GemStones.size(); ++i)
+        for (int j = 0; j < m_GemStones[i].size(); ++j) 
+            IsMatch(i, j);
+    return !m_RemovableElements.empty();
 }

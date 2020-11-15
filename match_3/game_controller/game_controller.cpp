@@ -8,47 +8,40 @@ void GameController::Run() {
     CheckValidityPtrs();
     sf::Event event;
     std::size_t frameCounter = 0;
-    bool firstStart = true, moved = false;
     while (m_Render.lock()->window().isOpen()) {
-        if (moved && ((++frameCounter) % 16 == 0)) {
-            if (m_Model.lock()->IsValidMove()) {
-                //Positive move - destroy line
-            }
-            else {
-                m_Model.lock()->Cancel();
-            }
-            m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
-            moved = false;
-        }
-
-        if (firstStart) {
-            m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
-            firstStart = false;
-        }
+        ++frameCounter;
         while (m_Render.lock()->window().pollEvent(event)) {
-            if (event.type == sf::Event::Closed) 
+            if (m_Moved) {
+                if (!m_Model.lock()->IsValidMove()) {
+                    m_Model.lock()->Cancel();
+                }
+                m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+                m_Moved = false;
+                m_Rendered = true;
+                continue;
+            }
+            if (m_Rendered && frameCounter % 8 == 0) {
+                if (m_Rendered = m_Model.lock()->CheckRemovable(); m_Rendered) {
+                    m_Model.lock()->DeleteElements();
+                    m_Render.lock()->SetScores(m_Model.lock()->GetScores());
+                }
+                m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+            }
+
+            
+            if (event.type == sf::Event::Closed)
                 m_Render.lock()->window().close();
 
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::F2) {
-                    m_Model.lock()->NewGame();
-                    m_Render.lock()->SetScores(m_Model.lock()->GetScores());
-                    m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+                    NewGame();
+                    m_Rendered = true;
                 }
             }
-
+            
             if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.key.code == sf::Mouse::Left) {
-                    auto [isStone, x, y] = GetClickedElement(m_Render.lock()->GetTileSize(), m_Render.lock()->GetOffset(), event.mouseButton);
-                    if (isStone && m_Model.lock()->SetClickedIndex(x, y)) {
-                        m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
-                        moved = true;
-                        frameCounter = 1;
-                        //Затребовать отрисовку смены позиций
-                    }
-                }
+                MouseButton(event);
             }
-
         }
 
         // Выполняем необходимые действия по отрисовке
@@ -56,22 +49,39 @@ void GameController::Run() {
     }
 }
 
-const std::tuple<bool, int, int> GameController::GetClickedElement (
-    const int aTileSize, 
-    const std::pair<int, int> aOffset, 
-    const sf::Event::MouseButtonEvent aEvent) const
-{
-    const auto& [xOffset, yOffset] = aOffset;
+void GameController::NewGame() {
+    m_Model.lock()->NewGame();
+    m_Render.lock()->SetScores(m_Model.lock()->GetScores());
+    m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+}
+
+void GameController::MouseButton(sf::Event& aEvent) {
+    if (aEvent.key.code == sf::Mouse::Left) {
+        auto[isStone, x, y] = GetClickedElement(m_Render.lock()->GetTileSize(), m_Render.lock()->GetOffset(), aEvent.mouseButton);
+        if (isStone && m_Model.lock()->SetClickedIndex(x, y)) {
+            m_Render.lock()->DrawAllGemStones(m_Model.lock()->GetStones());
+            m_Rendered = true;
+            m_Moved = true;
+            //Затребовать отрисовку смены позиций
+        }
+    }
+}
+
+const std::tuple<bool, int, int> GameController::GetClickedElement(
+    const int aTileSize,
+    const std::pair<int, int> aOffset,
+    const sf::Event::MouseButtonEvent aEvent) const {
+    const auto&[xOffset, yOffset] = aOffset;
     if (!IsValidClick(aTileSize, xOffset, aEvent.x))
         return { false, 0, 0 };
 
     if (!IsValidClick(aTileSize, yOffset, aEvent.y))
         return { false, 0, 0 };
-    
+
     int xIndex = GetStoneIndex(aTileSize, xOffset, aEvent.x);
     int yIndex = GetStoneIndex(aTileSize, yOffset, aEvent.y);
 
-    return { true, xIndex, yIndex};
+    return { true, xIndex, yIndex };
 }
 
 bool GameController::IsValidClick(const int aTileSize, const int aOffset, const int aPos) const {

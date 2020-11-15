@@ -7,6 +7,8 @@ class GameController {
     std::weak_ptr<GameRender> m_Render;
     std::weak_ptr<GameModel>  m_Model;
 
+    bool m_Moved = false;
+    bool m_Rendered = false;
 public:
     GameController(
         std::weak_ptr<GameRender>&& aRender, 
@@ -15,10 +17,13 @@ public:
 
     ~GameController();
     void Run();
-
 private:
+    void NewGame();
+    void MouseButton(sf::Event& aEvent);
     const std::tuple<bool, int, int> GetClickedElement(const int aTileSize, const std::pair<int, int> aOffset, const sf::Event::MouseButtonEvent aEvent) const;
     bool IsValidClick(const int aTileSize, const int aOffset, const int aPos) const;
     int  GetStoneIndex    (const int aTileSize, const int aOffset, const int aPos) const;
     void CheckValidityPtrs();
+
+
 };

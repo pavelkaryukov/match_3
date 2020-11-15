@@ -14,7 +14,7 @@ class GameModel {
     };
 
     stones::gem_stones_t m_GemStones;
-    std::size_t m_Scores = 0;
+    mutable std::size_t m_Scores = 0;
     std::tuple<bool, Position>     m_Clicked{ false, {0, 0 }};
     std::tuple<Position, Position> m_LastMove{ {0, 0}, {0, 0} };
     mutable std::set<Position> m_RemovableElements;
@@ -28,7 +28,9 @@ public:
     bool IsValidMove() const;
     std::size_t GetScores() const;
     void NewGame();
-
+    void DeleteElements();
+    bool CheckRemovable();
+    //bool Deletable();
 private:
     void Init();
     GemsType RandomType() const;
@@ -40,4 +42,6 @@ private:
     bool IsMatch3InRow(const int aX, const int aY) const;
     bool IsMatch3InColumn(const int aX, const int aY) const;
     bool CheckMatch3Line(const Position&& aGem1, const Position&& aGem2, const Position&& aGem3) const;
+    void DeleteElement(Position aPos);
+    bool IsMatch_old(const int aX, const int aY) const;
 };
